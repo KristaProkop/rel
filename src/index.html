@@ -2,21 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>My First Parcel App</title>
+    <title>Monthly Rainfall by City</title>
     <link rel="stylesheet" href="./styles/styles.scss">
-    
+    <script src="./js/index.js" type="module" defer></script>
 </head>
   <body>
-    <h1>Weather By Month</h1>
+    <h1>2021 Weather By Month</h1>
     <form>
       <label for="cities">Select a city:</label>
-      <select name="cities">
+      <select id="cities" name="cities">
         <option disabled selected value> -- select -- </option>
         <option>Chicago</option>
         <option>Newark</option>
     </form>
   </select>
     <div id="weather_viz"></div>    
-    <script src="./js/index.js" type="module"></script>
   </body>
 </html>
