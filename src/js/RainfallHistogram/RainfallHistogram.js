@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /** Class representing a Histogram chart for rainfall. */
-class RainfallChart {
+class RainfallHistogram {
      /**
      * Create a chart element and set the city for data retrieval
      * @param {object} opts - parameters for the chart
@@ -63,7 +63,7 @@ class RainfallChart {
      * Create and append axis elements
      */
     addAxes() {
-        const m = this.margin;
+        const margin = this.margin;
 
         const xAxis = d3.axisBottom()
             .scale(this.xScale)
@@ -75,7 +75,7 @@ class RainfallChart {
 
         this.plot.append("g")
             .attr("class", "x axis")
-            .attr("transform", `translate(0, ${this.height - (m.top + m.bottom)})`)
+            .attr("transform", `translate(0, ${this.height - (margin.top + margin.bottom)})`)
             .call(xAxis);
 
         this.plot.append("g")
@@ -134,4 +134,5 @@ class RainfallChart {
         this.draw();
     }
 }
-export default RainfallChart;
+
+export default RainfallHistogram;

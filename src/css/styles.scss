@@ -2,12 +2,15 @@ body {
   h1 {
     color: #244F45;
   }
+
   .line {
     fill: none;
     stroke-width: 4px;
-}
-.axis path, .tick line {
+  }
+
+  .axis path, .tick line {
     fill: none;
     stroke: #333;
-}
+  }
+
 }
