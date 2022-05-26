@@ -1,15 +1,23 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta name="description" content="Demonstrating a histogram"/>
+    <title>Monthly Rainfall by City</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8"/>
-    <title>My First Parcel App</title>
-    <link rel="stylesheet" href="./styles/styles.scss">
-    <script src="https://d3js.org/d3.v4.js"></script>
-    
+    <link rel="stylesheet" href="./css/styles.scss">
+    <script src="./js/index.js" type="module" defer></script>
 </head>
   <body>
-    <!-- <h1>Weather By Month</h1> -->
-    <div id="my_dataviz"></div>    
-    <script src="./js/histogram.js"></script>
+    <h1>2021 Rainfall By Month</h1>
+    <form>
+      <label for="cities">Select a city:</label>
+      <select id="cities" name="cities">
+        <option disabled selected value> - select - </option>
+        <option value="chicago">Chicago</option>
+        <option value="newark">Newark</option>
+    </form>
+  </select>
+  <div id="weather_viz"></div>    
   </body>
 </html>

@@ -1,41 +1,43 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-
+const express = require("express");
+const fsPromises = require("fs").promises;
+const path = require("path");
+const bodyParser = require("body-parser");
 
 const app = express();
-
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'dist')));
-
-// Configure body parser middleware
+app.use(express.static(path.join(__dirname, "dist")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
-app.post('/weather', (req, res) => {
-    const city = req.body;
-    console.log(city);
-    const weatherByMonth = generateMockWeatherDataByMonth();
-    res.send(weatherByMonth);
-});
-
 app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
+    console.log(`App listening on port ${port}`);
 });
 
-
-const generateMockWeatherDataByMonth = () => {
-  const monthlyStats = (month) => {
-    return  { 
-      "month": month, 
-      "precipitation_inches": Math.floor(Math.random() * 10)
-    }
-  }
-  const result = Array.from(Array(12)).map((_, i) => monthlyStats(i));
-  return {
-    "data": result
-  }
-  
+/**
+ * Given a city param, return rainfall data for that city.
+ */
+function rainfallHandler(req, res) {
+    const city = req.query.city;
+    getCityWeatherData(city)
+        .then((response) => {
+            res.send(response);
+        })
+        .catch((err) => {
+            res.sendStatus(404);
+        });
 }
+app.get("/rainfall_last_year", rainfallHandler);
+
+/**
+ * Given a city param, find a corresponding data in "data store"
+ * @param {string} city - the city name to retrieve data for
+ * TODO: Handle case sensitivity for different OSs
+ */
+const getCityWeatherData = (city) => {
+    const filepath = `json/${city}.json`;
+    return fsPromises.readFile(filepath, (err, data) => {
+        if (err) throw err;
+        JSON.parse(data);
+    });
+};
