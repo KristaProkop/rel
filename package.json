@@ -5,11 +5,12 @@
   "scripts": {
     "start": "node server.js",
     "build": "rm -rf dist && parcel build && cp -R json dist",
-    "prettier": "prettier --write \"src/**/*.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "prettier --write \"{server, src/**/*}.js\"",
+    "test": "jest"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
+    "jest": "^28.1.0",
     "parcel": "^2.6.0",
     "prettier": "2.6.2"
   },

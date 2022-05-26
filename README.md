@@ -15,8 +15,17 @@ npm run prettier
 ## run dev server
 npm run start
 ```
-
 App is served at [port 3000](http://localhost:3000/)
+
+
+# What it does
+
+The task: 
+> Build a web page that displays a histogram that is capable of visualizing average rainfall per month by US city.
+
+This project is comprised of a static web app and an express server. The server serves
+one endpoint which takes a city name and responds with data corresponding to that city.
+The sample data backing the endpoint is static JSON data in the [json](./json/) directory.
 
 
 Example request to retrieve weather by month:
@@ -24,11 +33,45 @@ Example request to retrieve weather by month:
 curl --location --request GET 'localhost:3000/rainfall_last_year?city=chicago'
 ```
 
-TODOs:
+Response:
+```
+{
+    "city": "Chicago",
+    "total_rainfall": [
+        { "month": "Jan", "inches": 1.1 },
+        { "month": "Feb", "inches": 1.5 },
+        { "month": "Mar", "inches": 3.2 },
+        { "month": "Apr", "inches": 8.6 },
+        { "month": "May", "inches": 30.0 },
+        { "month": "Jun", "inches": 20.2 },
+        { "month": "Jul", "inches": 21.8 },
+        { "month": "Aug", "inches": 15.1 },
+        { "month": "Sep", "inches": 20.2 },
+        { "month": "Oct", "inches": 10.0 },
+        { "month": "Nov", "inches": 8.0 },
+        { "month": "Dec", "inches": 2.5 }
+    ] 
+}
+```
+
+Requirements: 
+> - [x] A statically hosted page that produces a histogram visualization (using your choice of js visualization library).
+> - [x] Hosted backend REST API serving a route to be called by the hosted page's JavaScript application.
+> - [x] Average rainfall REST API endpoint
+            request: includes parameter supplying the name of a city in the US.
+            response: returns JSON representing the model data to be visualized.
+> - [x] Page makes an asynchronous request to your API endpoint for the JSON model data.
+> - [x] Response model data is fed to the histogram visualization and visualized on the page.
+> - [ ] Add automated test coverage.
+Bonus Points
+> - [x] Use some sort of build/bundler system to produce the distributable front end application files.
+
+Todos in the real world:
 - hook into legit weather API
-- handle unexpected data from REST endpoint (negative numbers etc)
-- separate backend and front ends
+- error handling for api response data (negative numbers etc)
+- backend validation for inputs from front end
+- separate the backend and front end to deploy independently
+- full stack live reload for local dev
 - env support
 - dockerize
-- backend validation for inputs from front end
-- eslint and prettier
+- eslint
