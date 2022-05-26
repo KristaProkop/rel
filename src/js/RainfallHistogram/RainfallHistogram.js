@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
-/** Class representing a Histogram chart. */
-class Histogram {
+/** Class representing a Histogram chart for rainfall. */
+class RainfallHistogram {
     /**
      * Create an svg of specific dimensions to display histographic data.
      * No data will be available until generateHistogram() is executed with
@@ -41,6 +41,10 @@ class Histogram {
     };
 
     /**
+     * TODO: Break this out into smaller functions. We should only ever reference the name of the 
+     * axes once as constants ("month" and "inches") and then refer to those constants instead of hardcoding them 
+     * everywhere.
+     * 
      * Given rainfall data per model below, set the ranges of both axes and render the data
      * {
      *      "city": "Chicago",
@@ -111,4 +115,4 @@ class Histogram {
     };
 }
 
-export default Histogram;
+export default RainfallHistogram;
