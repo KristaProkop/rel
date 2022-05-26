@@ -38,13 +38,12 @@ This project is comprised of a static web app and an express server. The server 
 one endpoint which takes a city name and responds with data corresponding to that city.
 The sample data backing the endpoint is static JSON data in the [json](./json/) directory.
 
-Majority of my time was spent learning how to do data viz and understanding the intricacies of the library I chose, D3. If this were real world work I would *definitely* spend some more time breaking up the chart module into more easily extendable components. I've included comments pointing out where and how I would make improvements. 
-
 # Examples 
 Example request to retrieve weather by month:
 ```
 curl --location --request GET 'localhost:3000/rainfall_last_year?city=chicago'
 ```
+
 CURRENT Response, not ideal but I am working out how to plot strings on the x axis:
 ```
 {
@@ -58,7 +57,7 @@ CURRENT Response, not ideal but I am working out how to plot strings on the x ax
 
     ]
 }
-
+```
 
 DESIRED Response when I figure out how to plot axes properly!  :
 ```
