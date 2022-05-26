@@ -4,12 +4,19 @@
     <meta charset="utf-8"/>
     <title>My First Parcel App</title>
     <link rel="stylesheet" href="./styles/styles.scss">
-    <script src="https://d3js.org/d3.v4.js"></script>
     
 </head>
   <body>
-    <!-- <h1>Weather By Month</h1> -->
-    <div id="my_dataviz"></div>    
-    <script src="./js/histogram.js"></script>
+    <h1>Weather By Month</h1>
+    <form>
+      <label for="cities">Select a city:</label>
+      <select name="cities">
+        <option disabled selected value> -- select -- </option>
+        <option>Chicago</option>
+        <option>Newark</option>
+    </form>
+  </select>
+    <div id="weather_viz"></div>    
+    <script src="./js/index.js" type="module"></script>
   </body>
 </html>

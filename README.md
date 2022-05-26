@@ -21,3 +21,9 @@ curl --location --request POST 'localhost:3000/weather' \
     "city": "chicago"
 }'
 ```
+
+TODO:
+- clean up js
+- eslint and prettier
+- automated tests
+- remove sales csv copy from package.json
