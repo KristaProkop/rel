@@ -45,8 +45,22 @@ Example request to retrieve weather by month:
 ```
 curl --location --request GET 'localhost:3000/rainfall_last_year?city=chicago'
 ```
+CURRENT Response, not ideal but I am working out how to plot strings on the x axis:
+```
+{
+    "city": "Chicago",
+    "total_rainfall": [
+        [0, 10],
+        [1, 70],
+        [2, 30],
+        [3, 10],
+        [4, 40]
 
-Response:
+    ]
+}
+
+
+DESIRED Response when I figure out how to plot axes properly!  :
 ```
 {
     "city": "Chicago",
@@ -68,6 +82,7 @@ Response:
 ```
 
 # Todos in the real world:
+- Fix the axis plotting problem referenced above
 - We probably want to create histograms for a variety of data sets. We could pull some of the functionality to a generic Histogram class that will render whatever data set it's given, instead of only having a rainfall histogram class. 
 - hook into legit weather API
 - error handling for api response data (negative numbers etc)
