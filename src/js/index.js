@@ -1,12 +1,15 @@
 import { RainfallHistogram } from "./RainfallHistogram";
+import * as d3 from "d3";
 
-/** Initialize a histogram and listen for city selection.
- *  IRL we would might have a city pre-selected or some other default displayed
- */
+
  window.addEventListener('DOMContentLoaded', (event) => {
-    const histogram = new RainfallHistogram();
-    const citySelection = document.getElementById("cities");
-    citySelection.addEventListener("change", histogram.getRainfallLastYear);
+    const chart = new RainfallHistogram({
+        element: document.querySelector('.weather_viz')
+    });
+    d3.select(window).on('resize', () => chart.draw() );
+    d3.select("#cities").on("change", (e) => {
+        const city = e.target.value
+        chart.setCity(city) 
+    });
 });
-
 

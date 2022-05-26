@@ -1,17 +1,10 @@
 {
     "city": "Newark",
     "total_rainfall": [
-        { "month": "Jan", "inches": 2.1 },
-        { "month": "Feb", "inches": 2.5 },
-        { "month": "Mar", "inches": 4.2 },
-        { "month": "Apr", "inches": 4.6 },
-        { "month": "May", "inches": 6.0 },
-        { "month": "Jun", "inches": 7.2 },
-        { "month": "Jul", "inches": 4.8 },
-        { "month": "Aug", "inches": 5.1 },
-        { "month": "Sep", "inches": 3.2 },
-        { "month": "Oct", "inches": 3.0 },
-        { "month": "Nov", "inches": 2.0 },
-        { "month": "Dec", "inches": 2.5 }
-    ] 
+        [0, 0],
+        [1, 140],
+        [2, 180],
+        [3, 10],
+        [4, 40]
+    ]
 }
