@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta name="description" content="Demonstrating a histogram"/>
     <title>Monthly Rainfall by City</title>
-    <link rel="stylesheet" href="./styles/styles.scss">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="./css/styles.scss">
     <script src="./js/index.js" type="module" defer></script>
 </head>
   <body>
@@ -11,9 +13,9 @@
     <form>
       <label for="cities">Select a city:</label>
       <select id="cities" name="cities">
-        <option disabled selected value> -- select -- </option>
-        <option>Chicago</option>
-        <option>Newark</option>
+        <option disabled selected value> - select - </option>
+        <option value="chicago">Chicago</option>
+        <option value="newark">Newark</option>
     </form>
   </select>
     <div id="weather_viz"></div>    

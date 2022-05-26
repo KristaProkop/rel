@@ -1,8 +1,15 @@
 import * as d3 from "d3";
 
+/** Class representing a Histogram chart. */
 class Histogram {
+    /**
+     * Create an svg of specific dimensions to display histographic data.
+     * No data will be available until generateHistogram() is executed with
+     * the data model.
+     * @param {object} margin - the desired margin of the histogram
+     */
     constructor(margin = { top: 20, right: 20, bottom: 30, left: 40 }) {
-        // set the dimensions and margins of the graph
+        // set the basic properties of the chart
         this.margin = margin;
         this.width = 960 - this.margin.left - this.margin.right;
         this.height = 500 - this.margin.top - this.margin.bottom;
@@ -12,7 +19,7 @@ class Histogram {
 
         // append the svg to the body
         // append a 'group' element to 'svg'
-        // moves the 'group' element to the top left margin
+        // move the 'group' element to the top left margin
         this.svg = d3
             .select("body")
             .append("svg")
@@ -26,28 +33,38 @@ class Histogram {
             .style("fill", this.fillColor);
     }
 
-    clearViz = () => {
+    /**
+     * Removes existing contents of the SVG element
+     */
+    clearContents = () => {
         this.svg.selectAll("*").remove();
     };
 
-    generateHistogram = (rawWeatherData) => {
-        this.clearViz();
-        const data = rawWeatherData.avg_rainfall;
-
-        // format the data
-        data.forEach((d) => {
-            d.inches = +d.inches;
-        });
+    /**
+     * Given rainfall data per model below, set the ranges of both axes and render the data
+     * {
+     *      "city": "Chicago",
+     *      "total_rainfall": [
+     *         { "month": "Jan", "inches": 1.1 },
+     *         { "month": "Feb", "inches": 1.5 },
+     *         ...
+     *      ]
+     *  }
+     * @param {object} rawWeatherData - the data retrieved from our previous year's rainfall api
+     */
+    renderRainfallByMonth = (rawWeatherData) => {
+        this.clearContents();
+        const data = rawWeatherData.total_rainfall;
 
         // Scale the range of the data in the domains
         this.x.domain(
-            data.map(function (d) {
+            data.map((d) => {
                 return d.month;
             })
         );
         this.y.domain([
             0,
-            d3.max(data, function (d) {
+            d3.max(data, (d) => {
                 return d.inches;
             }),
         ]);
@@ -78,6 +95,19 @@ class Histogram {
 
         // y axis
         this.svg.append("g").call(d3.axisLeft(this.y));
+    };
+
+    /**
+     * Get rainfall data from REST endpoint
+     * @param {object} e - event listener data;
+     */
+    getRainfallLastYear = (e) => {
+        d3.json(
+            `http://localhost:3000/rainfall_last_year?city=${e.target.value}`
+        )
+            .then(this.renderRainfallByMonth)
+            // IRL we'd have some fallback logic
+            .catch((err) => console.error(err));
     };
 }
 

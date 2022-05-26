@@ -1,12 +1,8 @@
-import { json as d3Json } from "d3";
 import { Histogram } from "./histogram";
 
-const chart = new Histogram();
-
-function getWeatherData() {
-    d3Json(
-        `http://localhost:3000/weather?city=${this.value.toLowerCase()}`
-    ).then(chart.generateHistogram);
-}
+/** Initialize a histogram and listen for city selection.
+ *  IRL we would might have a city pre-selected or some other default displayed
+ */
+const histogram = new Histogram();
 const citySelection = document.getElementById("cities");
-citySelection.addEventListener("change", getWeatherData);
+citySelection.addEventListener("change", histogram.getRainfallLastYear);

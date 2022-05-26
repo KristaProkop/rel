@@ -15,7 +15,7 @@ app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 });
 
-app.get('/weather', (req, res) => {
+app.get('/rainfall_last_year', (req, res) => {
   const city = req.query.city;
   getCityWeatherData(city)
     .then(response => {

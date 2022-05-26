@@ -1,6 +1,6 @@
 {
     "city": "Chicago",
-    "avg_rainfall": [
+    "total_rainfall": [
         { "month": "Jan", "inches": 1.1 },
         { "month": "Feb", "inches": 1.5 },
         { "month": "Mar", "inches": 3.2 },

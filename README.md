@@ -9,25 +9,26 @@ npm install
 ## build app
 npm run build
 
-## run dev server
-npm run start
-
 ## fix style and formatting
 npm run prettier
+
+## run dev server
+npm run start
 ```
 
 App is served at [port 3000](http://localhost:3000/)
 
 
-Example POST request to retrieve weather by month:
+Example request to retrieve weather by month:
 ```
-curl --location --request GET 'localhost:3000/weather?city=chicago'
+curl --location --request GET 'localhost:3000/rainfall_last_year?city=chicago'
 ```
 
-TODOs for a prod-ready app:
-- env support 
+TODOs:
+- hook into legit weather API
+- handle unexpected data from REST endpoint (negative numbers etc)
 - separate backend and front ends
+- env support
 - dockerize
 - backend validation for inputs from front end
 - eslint and prettier
-- automated tests

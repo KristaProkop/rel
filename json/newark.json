@@ -1,6 +1,6 @@
 {
     "city": "Newark",
-    "avg_rainfall": [
+    "total_rainfall": [
         { "month": "Jan", "inches": 2.1 },
         { "month": "Feb", "inches": 2.5 },
         { "month": "Mar", "inches": 4.2 },
