@@ -4,11 +4,15 @@ import * as d3 from "d3";
 class RainfallHistogram {
     /**
      * Create a chart element and set the city for data retrieval
-     * @param {object} opts - parameters for the chart
+     * @param {Object} opts - paramaters for the chart
+     * @param {HTMLElement} opts.element - The dom element that will contain the chart
+     * @param {string} [opts.city] - The city to display data for
+     * @param {string} [opts.xAxisName] - The parameter name for the data models' x axis
+     * @param {string} [opts.yAxisName] - The parameter name for the data models' y axis
      */
     constructor(opts) {
         this.element = opts.element;
-        this.data = this.setCity(this.city);
+        this.data = this.setCity(opts.city);
         this.xAxisName = opts.xAxisName || "month";
         this.yAxisName = opts.yAxisName || "inches";
     }
