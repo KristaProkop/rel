@@ -24,6 +24,7 @@ class RainfallHistogram {
         this.clearExistingChart();
 
         // set dimensions
+        // Todo: responsiveness vs static dimensions
         const margin = { top: 20, right: 20, bottom: 30, left: 40 };
         this.width = 960 - margin.left - margin.right;
         this.height = 500 - margin.top - margin.bottom;
