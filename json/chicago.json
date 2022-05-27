@@ -1,12 +1,17 @@
 {
     "city": "Chicago",
     "total_rainfall": [
-        [0, 10],
-        [1, 70],
-        [2, 30],
-        [3, 10],
-        [4, 40]
-
-    ]
+        { "month": "Jan", "inches": 1.1 },
+        { "month": "Feb", "inches": 1.5 },
+        { "month": "Mar", "inches": 3.2 },
+        { "month": "Apr", "inches": 8.6 },
+        { "month": "May", "inches": 30.0 },
+        { "month": "Jun", "inches": 20.2 },
+        { "month": "Jul", "inches": 21.8 },
+        { "month": "Aug", "inches": 15.1 },
+        { "month": "Sep", "inches": 20.2 },
+        { "month": "Oct", "inches": 10.0 },
+        { "month": "Nov", "inches": 8.0 },
+        { "month": "Dec", "inches": 2.5 }
+    ] 
 }
-

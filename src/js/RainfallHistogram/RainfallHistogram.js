@@ -9,95 +9,116 @@ class RainfallHistogram {
     constructor(opts) {
         this.element = opts.element;
         this.data = this.setCity(this.city)
+        this.xAxisName = opts.xAxisName || 'month';
+        this.yAxisName = opts.yAxisName || "inches";
     }
     
     /**
      * Append an svg element to the specified element and draw the chart 
      */
     draw() {
-        this.width = this.element.offsetWidth;
-        this.height = this.width / 2;
-        this.margin = {
-            top: 20,
-            right: 75,
-            bottom: 45,
-            left: 50
-        };
+        this.clearExistingChart();
 
-        this.element.innerHTML = '';
-        const svg = d3.select(this.element).append('svg');
-        svg.attr('width',  this.width);
-        svg.attr('height', this.height);
+        // set dimensions
+        const margin =  { top: 20, right: 20, bottom: 30, left: 40 };
+        this.width = 960 - margin.left - margin.right;
+        this.height = 500 - margin.top - margin.bottom;
+        this.setScale()
 
-        this.plot = svg.append('g')
-            .attr('transform',`translate(${this.margin.left},${this.margin.top})`);
+        // append the svg to the body and a 'group' element to svg
+        this.svg = d3
+            .select(`.${this.element.className}`)
+            .append("svg")
+            .attr("width", this.width)
+            .attr("height", this.height + margin.top + margin.bottom)
+            .append("g")
+            .attr(
+                "transform",
+                `translate(${margin.left},${margin.top})`
+            )
 
-        this.createScales();
+        this.setDomain()
+        this.makeRectangles();
         this.addAxes();
-        this.addLine();
-    }
     
-    /**
-     * Calculate max and min data
-     */
-    createScales() {
-        const margin = this.margin;
-        
-        // 
-        const xExtent = d3.extent(this.data, d => d[0]);
-        const yExtent = d3.extent(this.data, d => d[1]);
-
-        // force zero baseline if all data points are positive
-        if (yExtent[0] > 0) { yExtent[0] = 0; };
-
-        this.xScale = d3.scaleTime()
-            .range([0, this.width-margin.right])
-            .domain(xExtent);
-
-        this.yScale = d3.scaleLinear()
-            .range([this.height-(margin.top+margin.bottom), 0])
-            .domain(yExtent);
     }
 
     /**
-     * Create and append axis elements
+     * Construct a new band scale
      */
-    addAxes() {
-        const margin = this.margin;
+    setScale = () => {
+        this.x = d3.scaleBand().range([0, this.width]).padding(0.1);
+        this.y = d3.scaleLinear().range([this.height, 0]);
+    };
 
-        const xAxis = d3.axisBottom()
-            .scale(this.xScale)
-            .ticks(d3.timeMonth);
-
-        const yAxis = d3.axisLeft()
-            .scale(this.yScale)
-            .tickFormat(d3.format("d"));
-
-        this.plot.append("g")
-            .attr("class", "x axis")
-            .attr("transform", `translate(0, ${this.height - (margin.top + margin.bottom)})`)
-            .call(xAxis);
-
-        this.plot.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-    }
     
     /**
-     * Add Line to chart graphing the data stored in this object
+     * Scale the range of the data in the domains
      */
-    addLine() {
-        const line = d3.line()
-            .x(d => this.xScale(d[0]))
-            .y(d => this.yScale(d[1]));
+    setDomain = () => {
+        const data = this.data;
 
-        this.plot.append('path')
-            .datum(this.data)
-            .classed('line', true)
-            .attr('d', line)
-            .style('stroke', 'black');
+        // x axis is months, as they are
+        this.x.domain(
+            data.map((d) => {
+                return d[this.xAxisName];
+            })
+        );
+
+        // y axis is 0 to the max metric
+        this.y.domain([
+            0,
+            d3.max(data, (d) => {
+                return d[this.yAxisName];
+            }),
+        ]);
     }
-    
+    /**
+     * Create bars on chart
+     */
+    makeRectangles = () => {
+        const barClassName = 'bar';
+        this.svg
+            .selectAll(`.${barClassName}`)
+            .data(this.data)
+            .enter()
+            .append("rect")
+            .attr("class", barClassName)
+            .attr("x", (d) => {
+                return this.x(d[this.xAxisName]);
+            })
+            .attr("width", this.x.bandwidth())
+            .attr("y", (d) => {
+                return this.y(d[this.yAxisName]);
+            })
+            .attr("height", (d) => {
+                return this.height - this.y(d[this.yAxisName]);
+            });
+    }
+
+    /**
+     * Append groups for x and y axes
+     */
+    addAxes = () => {
+        // x axis
+        this.svg
+            .append("g")
+            .attr("transform", `translate(0,${this.height})`)
+            .call(d3.axisBottom(this.x));
+
+        // y axis
+        this.svg.append("g").call(d3.axisLeft(this.y));
+    }
+
+    /**
+     * Removes the first matching svg element. If I had multiple svg elements that could be bad obvi.
+     * I should really remove `this.svg` but I didn't have time to implement that.
+     */
+     clearExistingChart = () => {
+        d3.select("svg").remove(); 
+    };
+
+   
     /**
      * Get rainfall data from REST endpoint
      * @param {string} city - the city to retrieve data for
@@ -112,7 +133,7 @@ class RainfallHistogram {
     };
 
      /**
-     * Set data to the given city
+     * Set the current city and update data to match
      * @param {string} city - the city to retrieve data for
      */
     setCity(city) {
@@ -120,6 +141,7 @@ class RainfallHistogram {
             this.city = city;
             this.getRainfallLastYear(this.city)
                 .then(res => {
+                    // Should handle errors and unexpected responses too
                     this.setData(res.total_rainfall)
                 })
         }
