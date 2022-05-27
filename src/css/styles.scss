@@ -2,4 +2,13 @@ body {
   h1 {
     color: #244F45;
   }
+
+  #chart {
+    background: lightgray;
+    border: 1px solid black;
+  }
+  
+  rect {
+    fill: steelblue;
+  }
 }

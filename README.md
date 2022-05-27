@@ -70,7 +70,6 @@ Response:
 - hook into legit weather API
 - error handling for api response data (negative numbers etc)
 - proper styling
-- fix responsiveness
 - backend validation for inputs from front end
 - separate the backend and front end to deploy independently
 - full stack live reload for local dev

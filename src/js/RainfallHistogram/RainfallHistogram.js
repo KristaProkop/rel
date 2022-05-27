@@ -22,34 +22,66 @@ class RainfallHistogram {
      */
     draw() {
         this.clearExistingChart();
+        const margin = { top: 10, right: 20, bottom: 30, left: 30 };
 
-        // set dimensions
-        // Todo: responsiveness vs static dimensions
-        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-        this.width = 960 - margin.left - margin.right;
-        this.height = 500 - margin.top - margin.bottom;
+        // the exact dimensions of 400 x 400
+        // will only be used for the initial render
+        // but the width to height proportion
+        // will be preserved as the chart is resized
+        this.width = 400 - margin.left - margin.right;
+        this.height = 400 - margin.top - margin.bottom;
+
         this.setScale();
+        this.setDomain();
 
-        // append the svg to the body and a 'group' element to svg
         this.svg = d3
             .select(`#${this.element.id}`)
             .append("svg")
-            .attr("width", this.width)
+            .attr("width", this.width + margin.left + margin.right)
             .attr("height", this.height + margin.top + margin.bottom)
+            .call(this.responsivefy)
             .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        this.setDomain();
         this.makeRectangles();
         this.addAxes();
     }
 
     /**
+     * Executing this upon an svg will make it more responsive by resizing based on the viewport
+     */
+    responsivefy = (svg) => {
+        const container = d3.select(svg.node().parentNode),
+            width = parseInt(svg.style("width"), 10),
+            height = parseInt(svg.style("height"), 10),
+            aspect = width / height;
+
+        // add viewBox attribute and set its value to the initial size
+        // add preserveAspectRatio attribute to specify how to scale
+        // and call resize so that svg resizes on inital page load
+        svg.attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("preserveAspectRatio", "xMinYMid")
+            .call(resize);
+
+        // add a listener so the chart will be resized when the window resizes
+        d3.select(window).on("resize." + container.attr("id"), resize);
+
+        // this is what actually resizes the chart
+        // it will be called on load and window resize
+        function resize() {
+            const targetWidth = parseInt(container.style("width"));
+            svg.attr("width", targetWidth);
+            svg.attr("height", Math.round(targetWidth / aspect));
+        }
+    };
+
+    /**
      * Construct a new band scale
      */
     setScale = () => {
-        this.x = d3.scaleBand().range([0, this.width]).padding(0.1);
-        this.y = d3.scaleLinear().range([this.height, 0]);
+        this.xScale = d3.scaleBand().padding(0.2).range([0, this.width]);
+
+        this.yScale = d3.scaleLinear().range([this.height, 0]);
     };
 
     /**
@@ -59,55 +91,49 @@ class RainfallHistogram {
         const data = this.data;
 
         // x axis is months, as they are
-        this.x.domain(
+        this.xScale.domain(
             data.map((d) => {
                 return d[this.xAxisName];
             })
         );
 
         // y axis is 0 to the max metric
-        this.y.domain([
+        this.yScale.domain([
             0,
             d3.max(data, (d) => {
                 return d[this.yAxisName];
             }),
         ]);
     };
+
     /**
      * Create bars on chart
      */
     makeRectangles = () => {
-        const barClassName = "bar";
         this.svg
-            .selectAll(`.${barClassName}`)
+            .selectAll("rect")
             .data(this.data)
             .enter()
             .append("rect")
-            .attr("class", barClassName)
-            .attr("x", (d) => {
-                return this.x(d[this.xAxisName]);
-            })
-            .attr("width", this.x.bandwidth())
-            .attr("y", (d) => {
-                return this.y(d[this.yAxisName]);
-            })
-            .attr("height", (d) => {
-                return this.height - this.y(d[this.yAxisName]);
-            });
+            .attr("x", (d) => this.xScale(d[this.xAxisName]))
+            .attr("y", (d) => this.yScale(d[this.yAxisName]))
+            .attr("width", (d) => this.xScale.bandwidth())
+            .attr(
+                "height",
+                (d) => this.height - this.yScale(d[this.yAxisName])
+            );
     };
 
     /**
      * Append groups for x and y axes
      */
     addAxes = () => {
-        // x axis
+        this.svg.append("g").call(d3.axisLeft(this.yScale));
+
         this.svg
             .append("g")
-            .attr("transform", `translate(0,${this.height})`)
-            .call(d3.axisBottom(this.x));
-
-        // y axis
-        this.svg.append("g").call(d3.axisLeft(this.y));
+            .attr("transform", `translate(0, ${this.height})`)
+            .call(d3.axisBottom(this.xScale));
     };
 
     /**
