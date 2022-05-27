@@ -1,5 +1,5 @@
 import { RainfallHistogram } from "./RainfallHistogram";
-import * as d3 from "d3";
+import { select as d3Select } from "d3";
 
 /** Initialize a histogram .
  *  IRL we would might have a city pre-selected or some other default displayed
@@ -10,10 +10,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
 
     // Redraw on page resize. IRL it might be worth ‘throttling’ this
-    d3.select(window).on("resize", () => chart.draw());
+    d3Select(window).on("resize", () => chart.draw());
 
     // Listen for city selection
-    d3.select("#cities").on("change", (e) => {
+    d3Select("#cities").on("change", (e) => {
         const city = e.target.value;
         chart.setCity(city);
     });
