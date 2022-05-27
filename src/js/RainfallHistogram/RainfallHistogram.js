@@ -8,6 +8,7 @@ class RainfallHistogram {
      */
     constructor(opts) {
         this.element = opts.element;
+
         this.data = this.setCity(this.city)
         this.xAxisName = opts.xAxisName || 'month';
         this.yAxisName = opts.yAxisName || "inches";
@@ -27,7 +28,7 @@ class RainfallHistogram {
 
         // append the svg to the body and a 'group' element to svg
         this.svg = d3
-            .select(`.${this.element.className}`)
+            .select(`#${this.element.id}`)
             .append("svg")
             .attr("width", this.width)
             .attr("height", this.height + margin.top + margin.bottom)

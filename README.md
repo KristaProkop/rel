@@ -36,7 +36,7 @@ App is served at [port 3000](http://localhost:3000/)
  
 This project is comprised of a static web app and an express server. The server serves
 one endpoint which takes a city name and responds with data corresponding to that city.
-The sample data backing the endpoint is static JSON data in the [json](./json/) directory.
+The sample data backing the endpoint is static JSON in the [json](./json/) directory.
 
 # Examples 
 Example request to retrieve weather by month:
@@ -44,22 +44,7 @@ Example request to retrieve weather by month:
 curl --location --request GET 'localhost:3000/rainfall_last_year?city=chicago'
 ```
 
-CURRENT Response, not ideal but I am working out how to plot strings on the x axis:
-```
-{
-    "city": "Chicago",
-    "total_rainfall": [
-        [0, 10],
-        [1, 70],
-        [2, 30],
-        [3, 10],
-        [4, 40]
-
-    ]
-}
-```
-
-DESIRED Response when I figure out how to plot axes properly!  :
+Response:
 ```
 {
     "city": "Chicago",
@@ -81,10 +66,10 @@ DESIRED Response when I figure out how to plot axes properly!  :
 ```
 
 # Todos in the real world:
-- Fix the axis plotting problem referenced above
-- We probably want to create histograms for a variety of data sets. We could pull some of the functionality to a generic Histogram class that will render whatever data set it's given, instead of only having a rainfall histogram class. 
+- We probably want to create histograms for a variety of data sets. We could pull some of the functionality to a generic Histogram class that will render whatever data set it's given, instead of only having a rainfall-specific histogram class. 
 - hook into legit weather API
 - error handling for api response data (negative numbers etc)
+- proper styling
 - backend validation for inputs from front end
 - separate the backend and front end to deploy independently
 - full stack live reload for local dev
