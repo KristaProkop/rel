@@ -8,7 +8,6 @@ class RainfallHistogram {
      */
     constructor(opts) {
         this.element = opts.element;
-
         this.data = this.setCity(this.city);
         this.xAxisName = opts.xAxisName || "month";
         this.yAxisName = opts.yAxisName || "inches";
@@ -115,10 +114,10 @@ class RainfallHistogram {
     };
 
     /**
-     * Get rainfall data from REST endpoint
+     * Get data from REST endpoint
      * @param {string} city - the city to retrieve data for
      */
-    getRainfallLastYear = (city) => {
+    getData = (city) => {
         return (
             d3
                 .json(`http://localhost:3000/rainfall_last_year?city=${city}`)
@@ -128,26 +127,26 @@ class RainfallHistogram {
     };
 
     /**
-     * Set the current city and update data to match
-     * @param {string} city - the city to retrieve data for
-     */
-    setCity(city) {
-        if (city) {
-            this.city = city;
-            this.getRainfallLastYear(this.city).then((res) => {
-                // Should handle errors and unexpected responses too
-                this.setData(res.total_rainfall);
-            });
-        }
-    }
-
-    /**
      * Set the new data to visualize and redraw the viz
      * @param {object} newData - the data to visualize
      */
     setData(newData) {
         this.data = newData;
         this.draw();
+    }
+
+    /**
+     * Set the current city and update data to match
+     * @param {string} city - the city to retrieve data for
+     */
+    setCity(city) {
+        if (city) {
+            this.city = city;
+            this.getData(this.city).then((res) => {
+                // Should handle errors and unexpected responses too
+                this.setData(res.total_rainfall);
+            });
+        }
     }
 }
 
