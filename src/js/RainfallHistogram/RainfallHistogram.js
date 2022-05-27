@@ -3,94 +3,98 @@ import * as d3 from "d3";
 /** Class representing a Histogram chart for rainfall. */
 class RainfallHistogram {
     /**
-     * Create an svg of specific dimensions to display histographic data.
-     * No data will be available until generateHistogram() is executed with
-     * the data model.
-     * @param {object} margin - the desired margin of the histogram
+     * Create a chart element and set the city for data retrieval
+     * @param {object} opts - parameters for the chart
      */
-    constructor(margin = { top: 20, right: 20, bottom: 30, left: 40 }) {
-        // set the basic properties of the chart
-        this.margin = margin;
-        this.width = 960 - this.margin.left - this.margin.right;
-        this.height = 500 - this.margin.top - this.margin.bottom;
-        this.x = d3.scaleBand().range([0, this.width]).padding(0.1);
-        this.y = d3.scaleLinear().range([this.height, 0]);
-        this.fillColor = "#5C9C8D";
-
-        // append the svg to the body
-        // append a 'group' element to 'svg'
-        // move the 'group' element to the top left margin
-        this.svg = d3
-            .select("body")
-            .append("svg")
-            .attr("width", this.width + this.margin.left + this.margin.right)
-            .attr("height", this.height + this.margin.top + this.margin.bottom)
-            .append("g")
-            .attr(
-                "transform",
-                `translate(${this.margin.left},${this.margin.top})`
-            )
-            .style("fill", this.fillColor);
+    constructor(opts) {
+        this.element = opts.element;
+        this.data = this.setCity(this.city);
+        this.xAxisName = opts.xAxisName || "month";
+        this.yAxisName = opts.yAxisName || "inches";
     }
 
     /**
-     * Removes existing contents of the SVG element
+     * Append an svg element to the specified element and draw the chart
      */
-    clearContents = () => {
-        this.svg.selectAll("*").remove();
+    draw() {
+        this.clearExistingChart();
+
+        // set dimensions
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        this.width = 960 - margin.left - margin.right;
+        this.height = 500 - margin.top - margin.bottom;
+        this.setScale();
+
+        // append the svg to the body and a 'group' element to svg
+        this.svg = d3
+            .select(`#${this.element.id}`)
+            .append("svg")
+            .attr("width", this.width)
+            .attr("height", this.height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        this.setDomain();
+        this.makeRectangles();
+        this.addAxes();
+    }
+
+    /**
+     * Construct a new band scale
+     */
+    setScale = () => {
+        this.x = d3.scaleBand().range([0, this.width]).padding(0.1);
+        this.y = d3.scaleLinear().range([this.height, 0]);
     };
 
     /**
-     * TODO: Break this out into smaller functions. We should only ever reference the name of the 
-     * axes once as constants ("month" and "inches") and then refer to those constants instead of hardcoding them 
-     * everywhere.
-     * 
-     * Given rainfall data per model below, set the ranges of both axes and render the data
-     * {
-     *      "city": "Chicago",
-     *      "total_rainfall": [
-     *         { "month": "Jan", "inches": 1.1 },
-     *         { "month": "Feb", "inches": 1.5 },
-     *         ...
-     *      ]
-     *  }
-     * @param {object} rawWeatherData - the data retrieved from our previous year's rainfall api
+     * Scale the range of the data in the domains
      */
-    renderRainfallByMonth = (rawWeatherData) => {
-        this.clearContents();
-        const data = rawWeatherData.total_rainfall;
+    setDomain = () => {
+        const data = this.data;
 
-        // Scale the range of the data in the domains
+        // x axis is months, as they are
         this.x.domain(
             data.map((d) => {
-                return d.month;
+                return d[this.xAxisName];
             })
         );
+
+        // y axis is 0 to the max metric
         this.y.domain([
             0,
             d3.max(data, (d) => {
-                return d.inches;
+                return d[this.yAxisName];
             }),
         ]);
-
-        // rectangles for bar chart
+    };
+    /**
+     * Create bars on chart
+     */
+    makeRectangles = () => {
+        const barClassName = "bar";
         this.svg
-            .selectAll(".bar")
-            .data(data)
+            .selectAll(`.${barClassName}`)
+            .data(this.data)
             .enter()
             .append("rect")
-            .attr("class", "bar")
+            .attr("class", barClassName)
             .attr("x", (d) => {
-                return this.x(d.month);
+                return this.x(d[this.xAxisName]);
             })
             .attr("width", this.x.bandwidth())
             .attr("y", (d) => {
-                return this.y(d.inches);
+                return this.y(d[this.yAxisName]);
             })
             .attr("height", (d) => {
-                return this.height - this.y(d.inches);
+                return this.height - this.y(d[this.yAxisName]);
             });
+    };
 
+    /**
+     * Append groups for x and y axes
+     */
+    addAxes = () => {
         // x axis
         this.svg
             .append("g")
@@ -102,17 +106,48 @@ class RainfallHistogram {
     };
 
     /**
-     * Get rainfall data from REST endpoint
-     * @param {object} e - event listener data;
+     * Removes the first matching svg element. If I had multiple svg elements that could be bad obvi.
+     * I should really remove `this.svg` but I didn't have time to implement that.
      */
-    getRainfallLastYear = (e) => {
-        d3.json(
-            `http://localhost:3000/rainfall_last_year?city=${e.target.value}`
-        )
-            .then(this.renderRainfallByMonth)
-            // IRL we'd have some fallback logic
-            .catch((err) => console.error(err));
+    clearExistingChart = () => {
+        d3.select("svg").remove();
     };
+
+    /**
+     * Get data from REST endpoint
+     * @param {string} city - the city to retrieve data for
+     */
+    getData = (city) => {
+        return (
+            d3
+                .json(`http://localhost:3000/rainfall_last_year?city=${city}`)
+                // IRL we'd have some fallback logic
+                .catch((err) => console.error(err))
+        );
+    };
+
+    /**
+     * Set the new data to visualize and redraw the viz
+     * @param {object} newData - the data to visualize
+     */
+    setData(newData) {
+        this.data = newData;
+        this.draw();
+    }
+
+    /**
+     * Set the current city and update data to match
+     * @param {string} city - the city to retrieve data for
+     */
+    setCity(city) {
+        if (city) {
+            this.city = city;
+            this.getData(this.city).then((res) => {
+                // Should handle errors and unexpected responses too
+                this.setData(res.total_rainfall);
+            });
+        }
+    }
 }
 
 export default RainfallHistogram;
