@@ -2,29 +2,29 @@ import * as d3 from "d3";
 
 /** Class representing a Histogram chart for rainfall. */
 class RainfallHistogram {
-     /**
+    /**
      * Create a chart element and set the city for data retrieval
      * @param {object} opts - parameters for the chart
      */
     constructor(opts) {
         this.element = opts.element;
 
-        this.data = this.setCity(this.city)
-        this.xAxisName = opts.xAxisName || 'month';
+        this.data = this.setCity(this.city);
+        this.xAxisName = opts.xAxisName || "month";
         this.yAxisName = opts.yAxisName || "inches";
     }
-    
+
     /**
-     * Append an svg element to the specified element and draw the chart 
+     * Append an svg element to the specified element and draw the chart
      */
     draw() {
         this.clearExistingChart();
 
         // set dimensions
-        const margin =  { top: 20, right: 20, bottom: 30, left: 40 };
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
         this.width = 960 - margin.left - margin.right;
         this.height = 500 - margin.top - margin.bottom;
-        this.setScale()
+        this.setScale();
 
         // append the svg to the body and a 'group' element to svg
         this.svg = d3
@@ -33,15 +33,11 @@ class RainfallHistogram {
             .attr("width", this.width)
             .attr("height", this.height + margin.top + margin.bottom)
             .append("g")
-            .attr(
-                "transform",
-                `translate(${margin.left},${margin.top})`
-            )
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        this.setDomain()
+        this.setDomain();
         this.makeRectangles();
         this.addAxes();
-    
     }
 
     /**
@@ -52,7 +48,6 @@ class RainfallHistogram {
         this.y = d3.scaleLinear().range([this.height, 0]);
     };
 
-    
     /**
      * Scale the range of the data in the domains
      */
@@ -73,12 +68,12 @@ class RainfallHistogram {
                 return d[this.yAxisName];
             }),
         ]);
-    }
+    };
     /**
      * Create bars on chart
      */
     makeRectangles = () => {
-        const barClassName = 'bar';
+        const barClassName = "bar";
         this.svg
             .selectAll(`.${barClassName}`)
             .data(this.data)
@@ -95,7 +90,7 @@ class RainfallHistogram {
             .attr("height", (d) => {
                 return this.height - this.y(d[this.yAxisName]);
             });
-    }
+    };
 
     /**
      * Append groups for x and y axes
@@ -109,42 +104,40 @@ class RainfallHistogram {
 
         // y axis
         this.svg.append("g").call(d3.axisLeft(this.y));
-    }
+    };
 
     /**
      * Removes the first matching svg element. If I had multiple svg elements that could be bad obvi.
      * I should really remove `this.svg` but I didn't have time to implement that.
      */
-     clearExistingChart = () => {
-        d3.select("svg").remove(); 
+    clearExistingChart = () => {
+        d3.select("svg").remove();
     };
 
-   
     /**
      * Get rainfall data from REST endpoint
      * @param {string} city - the city to retrieve data for
      */
-     getRainfallLastYear = (city) => {
-        return d3.json(
-            `http://localhost:3000/rainfall_last_year?city=${city}`
-        )
-            // IRL we'd have some fallback logic
-            .catch((err) => console.error(err));
-        
+    getRainfallLastYear = (city) => {
+        return (
+            d3
+                .json(`http://localhost:3000/rainfall_last_year?city=${city}`)
+                // IRL we'd have some fallback logic
+                .catch((err) => console.error(err))
+        );
     };
 
-     /**
+    /**
      * Set the current city and update data to match
      * @param {string} city - the city to retrieve data for
      */
     setCity(city) {
         if (city) {
             this.city = city;
-            this.getRainfallLastYear(this.city)
-                .then(res => {
-                    // Should handle errors and unexpected responses too
-                    this.setData(res.total_rainfall)
-                })
+            this.getRainfallLastYear(this.city).then((res) => {
+                // Should handle errors and unexpected responses too
+                this.setData(res.total_rainfall);
+            });
         }
     }
 

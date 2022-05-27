@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "build": "rm -rf dist && parcel build && cp -R json dist",
-    "prettier": "prettier --write \"{server, src/**/*}.js\"",
+    "prettier": "prettier --write \"src/**/*.js\"",
     "test": "jest"
   },
   "devDependencies": {

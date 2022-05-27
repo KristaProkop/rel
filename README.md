@@ -75,4 +75,4 @@ Response:
 - full stack live reload for local dev
 - env support
 - dockerize
-- eslint
+- eslint & prettier full setup
