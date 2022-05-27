@@ -20,7 +20,7 @@ class RainfallHistogram {
     /**
      * Append an svg element to the specified element and draw the chart
      */
-    draw() {
+    draw = () => {
         this.clearExistingChart();
         const margin = { top: 10, right: 20, bottom: 30, left: 30 };
 
@@ -29,7 +29,7 @@ class RainfallHistogram {
         // but the width to height proportion
         // will be preserved as the chart is resized
         this.width = 400 - margin.left - margin.right;
-        this.height = 400 - margin.top - margin.bottom;
+        this.height = 200 - margin.top - margin.bottom;
 
         this.setScale();
         this.setDomain();
@@ -161,7 +161,7 @@ class RainfallHistogram {
      * Set the new data to visualize and redraw the viz
      * @param {object} newData - the data to visualize
      */
-    setData(newData) {
+    setData = (newData) => {
         this.data = newData;
         this.draw();
     }
@@ -170,7 +170,7 @@ class RainfallHistogram {
      * Set the current city and update data to match
      * @param {string} city - the city to retrieve data for
      */
-    setCity(city) {
+    setCity = (city) => {
         if (city) {
             this.city = city;
             this.getData(this.city).then((res) => {
